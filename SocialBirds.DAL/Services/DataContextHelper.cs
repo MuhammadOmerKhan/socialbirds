@@ -27,12 +27,12 @@ namespace SocialBirds.DAL.Services
             repository.EnableAutoSelect = enableAutoSelect;
             return (repository);
         }
-        private static SocialBirdsRepository GetNewDataContext(string connectionString, string providerName, bool enableAutoSelect)
-        {
-            SocialBirdsRepository repository = new SocialBirdsRepository(connectionString, providerName);
-            repository.EnableAutoSelect = enableAutoSelect;
-            return (repository);
-        }
+        //private static SocialBirdsRepository GetNewDataContext(string connectionString, string providerName, bool enableAutoSelect)
+        //{
+        //    SocialBirdsRepository repository = new SocialBirdsRepository(connectionString, providerName);
+        //    repository.EnableAutoSelect = enableAutoSelect;
+        //    return (repository);
+        //}
 
         public static void EncryptConnString()
         {

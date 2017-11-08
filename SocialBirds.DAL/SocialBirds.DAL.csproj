@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Models\Entities\Entities.cs" />
+    <Compile Include="Models\Entities\UserRolesRightsEntities.cs" />
     <Compile Include="Models\Generated\Database.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

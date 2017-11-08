@@ -194,6 +194,22 @@ namespace SocialBirds.DAL.DataServices
 		[Column] public int? ModifiedBy { get; set; }
 	}
     
+	[TableName("dbo.CPMenuNavigation")]
+	[PrimaryKey("NavigationID")]
+	[ExplicitColumns]
+    public partial class CPMenuNavigation : SocialBirdsRepository.Record<CPMenuNavigation>  
+    {
+		[Column] public int NavigationID { get; set; }
+		[Column] public string MenuName { get; set; }
+		[Column] public string DisplayText { get; set; }
+		[Column] public string AdditionalText { get; set; }
+		[Column] public string LinkUrl { get; set; }
+		[Column] public string IconClass { get; set; }
+		[Column] public bool IsVisible { get; set; }
+		[Column] public int SequenceNo { get; set; }
+		[Column] public int? ParentNavigationID { get; set; }
+	}
+    
 	[TableName("dbo.Entities")]
 	[PrimaryKey("EntityID", AutoIncrement=false)]
 	[ExplicitColumns]
@@ -285,6 +301,41 @@ namespace SocialBirds.DAL.DataServices
 		[Column] public int? CreatedBy { get; set; }
 		[Column] public DateTime? ModifiedOn { get; set; }
 		[Column] public int? ModifiedBy { get; set; }
+	}
+    
+	[TableName("dbo.Rights")]
+	[PrimaryKey("RightID")]
+	[ExplicitColumns]
+    public partial class Right : SocialBirdsRepository.Record<Right>  
+    {
+		[Column] public int RightID { get; set; }
+		[Column] public string RightName { get; set; }
+		[Column] public string RightCode { get; set; }
+		[Column] public string RightType { get; set; }
+		[Column] public int? ApplicationID { get; set; }
+		[Column] public string Tag { get; set; }
+		[Column] public int Status { get; set; }
+	}
+    
+	[TableName("dbo.Roles")]
+	[PrimaryKey("RoleID")]
+	[ExplicitColumns]
+    public partial class Role : SocialBirdsRepository.Record<Role>  
+    {
+		[Column] public int RoleID { get; set; }
+		[Column] public string RoleName { get; set; }
+		[Column] public int? ApplicationID { get; set; }
+		[Column] public bool IsSystemRole { get; set; }
+	}
+    
+	[TableName("dbo.RolesRights")]
+	[PrimaryKey("RoleRightsID", AutoIncrement=false)]
+	[ExplicitColumns]
+    public partial class RolesRight : SocialBirdsRepository.Record<RolesRight>  
+    {
+		[Column] public int RoleRightsID { get; set; }
+		[Column] public int RightID { get; set; }
+		[Column] public int RoleID { get; set; }
 	}
     
 	[TableName("dbo.SocialNetworkProfiles")]
