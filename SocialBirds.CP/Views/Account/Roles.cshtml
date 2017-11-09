@@ -1,0 +1,103 @@
+﻿@using SocialBirds.CP;
+@using SocialBirds.Models;
+@using SocialBirds.DAL.Models.Entities;
+@model RolesAndRightsModel
+@{
+    ViewBag.Title = "Roles";
+}
+
+<div class="h1title">
+    <h1>Roles & Rights Management</h1>
+</div>
+<div class="clear"></div>
+<div id="search-filters" class="filter ce-project bnp">
+    <form method="post" id="searchform">
+
+        <label>Select Role :</label>
+        <div class="slhold btnpad">
+            <select id="TempalteID" name="TempalteID">
+                @foreach (var t in Model.Roles)
+                {
+                    string selected = t.CPRoleID == Model.SelectedRoleID ? "selected='selected'" : "";
+                    <option value="/Account/Roles?roleid=@t.CPRoleID" @selected>@t.RoleName</option>
+                }
+            </select>
+        </div>
+
+        <input type="button" id="btnShowFields" class="" value="Get Role's Rights">
+    </form>
+</div>
+
+<div id="listings">
+    <table id="listing_table" class="table" cellpadding="0" cellspacing="0">
+        <tbody>
+            <tr class="labh">
+                <td>Right Name</td>
+                <td>View</td>
+                <td>Add New</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+            @if (Model.SelectedRights == null)
+            {
+                Model.SelectedRights = new List<CPRight>();
+            }
+
+            @foreach (var mi in Model.AllMenuItems.Where(x => x.ParentNavigationID.HasValue).ToList())
+            {
+                if (mi == null)
+                {
+                    continue;
+                }
+
+                CPRight view, add, edit, delete;
+                bool v, a, e, d;
+                view = Model.AllRights.Where(x => x.AppliesToMenuItemID == mi.NavigationID && x.RightCode.ToLower().StartsWith("view-")).FirstOrDefault();
+                add = Model.AllRights.Where(x => x.AppliesToMenuItemID == mi.NavigationID && x.RightCode.ToLower().StartsWith("add-")).FirstOrDefault();
+                edit = Model.AllRights.Where(x => x.AppliesToMenuItemID == mi.NavigationID && x.RightCode.ToLower().StartsWith("edit-")).FirstOrDefault();
+                delete = Model.AllRights.Where(x => x.AppliesToMenuItemID == mi.NavigationID && x.RightCode.ToLower().StartsWith("del-")).FirstOrDefault();
+                v = view != null ? (Model.SelectedRights.Where(x => x.RightID == view.RightID).Count() != 0 ? true : false) : false;
+                d = delete != null ? (Model.SelectedRights.Where(x => x.RightID == delete.RightID).Count() != 0 ? true : false) : false;
+                e = edit != null ? (Model.SelectedRights.Where(x => x.RightID == edit.RightID).Count() != 0 ? true : false) : false;
+                a = add != null ? (Model.SelectedRights.Where(x => x.RightID == add.RightID).Count() != 0 ? true : false) : false;
+                view = view ?? new CPRight();
+                add = add ?? new CPRight();
+                edit = edit ?? new CPRight();
+                delete = delete ?? new CPRight();
+                if (!(!view.Enabled && !add.Enabled && !edit.Enabled && !delete.Enabled))
+                {
+                    <tr>
+                        <td>@mi.MenuName</td>
+                        <td><input type="checkbox" relmi="@mi.NavigationID" relrightid="@view.RightID" @(v ? "checked='checked'" : "") @(view.Enabled ? "" : "disabled='disabled'") /></td>
+                        <td><input type="checkbox" relmi="@mi.NavigationID" relrightid="@add.RightID" @(a ? "checked='checked'" : "") @(add.Enabled ? "" : "disabled='disabled'") /></td>
+                        <td><input type="checkbox" relmi="@mi.NavigationID" relrightid="@edit.RightID" @(e ? "checked='checked'" : "") @(edit.Enabled ? "" : "disabled='disabled'") /></td>
+                        <td><input type="checkbox" relmi="@mi.NavigationID" relrightid="@delete.RightID" @(d ? "checked='checked'" : "") @(delete.Enabled ? "" : "disabled='disabled'") /></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#btnShowFields").click(function () {
+            debugger;
+            window.location.href = $("#TempalteID :selected").val();
+        });
+        $("input[type='checkbox']").each(function (index,cbx) {
+            $(cbx).change(function () {
+                debugger;
+                var formData = { RoleID: @Model.SelectedRoleID, RightID: parseInt($(cbx).attr("relrightid")), Option: $(cbx).prop("checked") };
+                console.log(formData);
+                var jqxhr = $.ajax({
+                    type: "POST",
+                    data: formData,
+                    url: "/Account/ProcessRight"
+                })
+                   .done(function (data) {
+                       console.log(data);
+                   });
+            });
+        });
+    });
+</script>

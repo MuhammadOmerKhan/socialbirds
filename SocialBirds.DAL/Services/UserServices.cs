@@ -47,5 +47,69 @@ namespace SocialBirds.DAL.Services
                 return user;
             }
         }
+        public List<Role> GetAllRoles()
+        {
+            using (var context =  DataContextHelper.GetPPDataContext())
+            {
+                List<Role> Roles = new List<Role>();
+
+                //context.Execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
+
+                Roles = context.Fetch<Role>("Select * From Roles").ToList();
+
+                //context.Execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+
+                return Roles;
+            }
+        }
+        public List<Right> GetAllRights()
+        {
+            using (var context = DataContextHelper.GetPPDataContext())
+            {
+                return context.Fetch<Right>("Select * From Rights").ToList();
+            }
+        }
+        public List<CPMenuNavigation> GetAllMenutItems()
+        {
+            using (var context = DataContextHelper.GetPPDataContext())
+            {
+                var ppSql = PetaPoco.Sql.Builder.Select(@"*")
+                            .From("CPMenuNavigation");
+
+                return context.Fetch<CPMenuNavigation>(ppSql).ToList();
+            }
+        }
+        public List<Right> GetAllRightsByRole(int roleID)
+        {
+            using (var context = DataContextHelper.GetPPDataContext())
+            {
+                List<Right> Rights = new List<Right>();
+
+                //context.Execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
+
+                Rights = context.Fetch<Right>("Select * From Rights R Inner Join RolesRights RR On R.RightID = RR.RightID Where RR.RoleID = @0", roleID).ToList();
+
+                //context.Execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+
+                return Rights;
+            }
+        }
+        public void GrantRightToRole(int rightID, int roleID)
+        {
+            using (var context = DataContextHelper.GetPPDataContext())
+            {
+                RolesRight ur = new RolesRight();
+                ur.RoleID = roleID;
+                ur.RightID = rightID;
+                context.Insert(ur);
+            }
+        }
+        public void DenyRightToRole(int rightID, int roleID)
+        {
+            using (var context = DataContextHelper.GetPPDataContext())
+            {
+                context.Execute("Delete From RolesRights Where RightID = @0 And RoleID = @1", rightID, roleID);
+            }
+        }
     }
 }

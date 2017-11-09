@@ -115,6 +115,9 @@
     <Compile Include="CommonCode\HelpRegistrar.cs" />
     <Compile Include="CommonCode\SessionHelper.cs" />
     <Compile Include="CommonCode\SessionManager.cs" />
+    <Compile Include="CommonCode\UserModuleHelper.cs" />
+    <Compile Include="CommonCode\UserRoleRightHelper.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\FacebookController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1037,6 +1040,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
+    <Content Include="Views\Account\Roles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

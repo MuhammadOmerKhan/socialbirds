@@ -8,7 +8,7 @@ using SocialBirds.DAL.Models.Entities;
 
 namespace SocialBirds.Models
 {
-    public class AccountsModels
+    public class RolesAndRightsModel
     {
         public List<CPRole> Roles { get; set; }
         public List<CPMenuNavigation> AllMenuItems { get; set; }

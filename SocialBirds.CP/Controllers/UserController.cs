@@ -121,17 +121,6 @@ namespace SocialBirds.CP.Controllers
             }
             return result;
         }
-        public ActionResult Roles(int? roleID)
-        {
-            AccountsModels model = new AccountsModels();
-            int baseAppID = GlobalAppConfigs.ArgaamPlusAppID;
-            model.Roles = UserRoleRightHelper.GetAllRoles(baseAppID);
-            roleID = roleID == null ? ((model.Roles != null) ? model.Roles[0].CPRoleID : 0) : roleID;
-            model.SelectedRoleID = roleID.Value;
-            model.AllRights = UserRoleRightHelper.GetAllRights(baseAppID);
-            model.AllMenuItems = UserServices.Instance.GetAllMenutItems();
-            model.SelectedRights = UserRoleRightHelper.GetAllRightsByRoleID(model.SelectedRoleID, baseAppID);
-            return View(model);
-        }
+        
     }
 }
