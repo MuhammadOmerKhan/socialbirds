@@ -1,5 +1,6 @@
 ﻿using SocialBirds.DAL.DataServices;
 using SocialBirds.DAL.Models.Entities;
+using SocialBirds.DAL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -153,6 +154,58 @@ namespace SocialBirds.CommonCode
             }
 
             return umRoleRight;
+        }
+        public static List<CPMenuNavigation> GetUserMenus(int userID)
+        {
+            List<CPRight> userAssignedRights = GetUserAssignedRights(userID);
+
+            List<CPMenuNavigation> lstMenuNavigations = UserServices.Instance.GetAllMenutItems();
+
+            if (lstMenuNavigations != null && userAssignedRights != null && lstMenuNavigations.Count > 0 &&
+                lstMenuNavigations.Count > 0)
+            {
+                List<int> umMenuNavigationIDs =
+                    userAssignedRights.Select(ur => ur.AppliesToMenuItemID != null ? ur.AppliesToMenuItemID.Value : 0)
+                                      .Where(id => id != 0)
+                                      .Distinct()
+                                      .ToList();
+
+                List<int> parentMenuNavigationIDs =
+                    lstMenuNavigations.Where(mn => umMenuNavigationIDs.Contains(mn.NavigationID))
+                                      .Select(mn => mn.ParentNavigationID != null ? mn.ParentNavigationID.Value : 0)
+                                      .Where(id => id != 0)
+                                      .Distinct()
+                                      .ToList();
+
+                if (umMenuNavigationIDs != null && parentMenuNavigationIDs != null && umMenuNavigationIDs.Count > 0 &&
+                    parentMenuNavigationIDs.Count > 0)
+                {
+                    List<int> menuNavigationIDs =
+                        umMenuNavigationIDs.Concat(parentMenuNavigationIDs).Distinct().ToList();
+
+                    lstMenuNavigations =
+                            lstMenuNavigations.Where(mn => menuNavigationIDs.Contains(mn.NavigationID)).ToList();
+                }
+            }
+            else
+            {
+                lstMenuNavigations = new List<CPMenuNavigation>();
+            }
+
+            return lstMenuNavigations;
+        }
+        public static List<CPRight> GetUserAssignedRights(int userID)
+        {
+            List<CPRight> lstCPRights = null;
+
+            RightsListResult rightsListResult = UserModuleHelper.GetUserRights(userID);
+
+            if (rightsListResult.WasSuccessfull)
+            {
+                lstCPRights = ConvertUMRightsToCPRights(rightsListResult.lstRights);
+            }
+
+            return lstCPRights;
         }
     }
 }

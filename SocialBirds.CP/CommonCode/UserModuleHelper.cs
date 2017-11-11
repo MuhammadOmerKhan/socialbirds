@@ -109,6 +109,24 @@ namespace SocialBirds.CommonCode
 
             return operationResult;
         }
+        public static RightsListResult GetUserRights(int userID)
+        {
+            RightsListResult rightsListResult = new RightsListResult();
+
+            try
+            {
+                rightsListResult.lstRights =
+                    UserServices.Instance.GetUserRights(userID);
+
+                rightsListResult.WasSuccessfull = true;
+            }
+            catch (Exception exception)
+            {
+                rightsListResult.ErrorMsg = exception.Message;
+            }
+
+            return rightsListResult;
+        }
     }
     
 }
