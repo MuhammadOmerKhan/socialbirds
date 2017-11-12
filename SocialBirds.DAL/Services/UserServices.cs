@@ -66,7 +66,7 @@ namespace SocialBirds.DAL.Services
         {
             using (var context = DataContextHelper.GetPPDataContext())
             {
-                return context.Fetch<Right>("Select * From Rights").ToList();
+                return context.Fetch<Right>("Select * From Rights where ApplicationID= 6").ToList();
             }
         }
         public List<CPMenuNavigation> GetAllMenutItems()
@@ -109,6 +109,29 @@ namespace SocialBirds.DAL.Services
             using (var context = DataContextHelper.GetPPDataContext())
             {
                 context.Execute("Delete From RolesRights Where RightID = @0 And RoleID = @1", rightID, roleID);
+            }
+        }
+        public List<Right> GetUserRights(int userID)
+        {
+            using (var context = DataContextHelper.GetPPDataContext())
+            {
+                List<Right> Rights = new List<Right>();
+
+                //context.Execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;");
+
+                var sql = PetaPoco.Sql.Builder
+                    .Select("RI.*")
+                    .From("UserRoles UR")
+                    .InnerJoin("Roles R").On("UR.RoleID = R.RoleID")
+                    .InnerJoin("RolesRights RR").On("R.RoleID = RR.RoleID")
+                    .InnerJoin("Rights RI").On("RI.RightID = RR.RightID")
+                    .Where(" UR.USerID = @0",  userID);
+
+                Rights = context.Fetch<Right>(sql).ToList();
+
+               // context.Execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+
+                return Rights;
             }
         }
     }

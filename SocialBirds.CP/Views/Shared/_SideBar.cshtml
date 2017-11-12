@@ -195,39 +195,66 @@
             <li><a href="#"><i class="fa fa-circle-o text-red"></i><span>Important</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-yellow"></i><span>Warning</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-aqua"></i><span>Information</span></a></li>
-        </ul>
-        <ul class="treeview-menu">
-            @{
+            
+                @{
 
-                var selected = UserRoleRightHelper.GetUserMenus(55).Where(x => x.LinkUrl.ToLower() == Request.Url.AbsolutePath.ToString().ToLower()).FirstOrDefault();
-            }
-            @foreach (var m in UserRoleRightHelper.GetUserMenus(55).Where(x => !x.ParentNavigationID.HasValue && x.IsVisible).OrderBy(x => x.SequenceNo).ToList())
+                    var selected = UserRoleRightHelper.GetUserMenus(55).Where(x => x.LinkUrl.ToLower() == Request.Url.AbsolutePath.ToString().ToLower()).FirstOrDefault();
+                }
+                @foreach (var m in UserRoleRightHelper.GetUserMenus(55).Where(x => !x.ParentNavigationID.HasValue && x.IsVisible).OrderBy(x => x.SequenceNo).ToList())
             {
                 string active = (selected != null && (selected.ParentNavigationID == m.NavigationID || selected.NavigationID == m.NavigationID)) ? "active" : string.Empty;
-                <li class="treeview @active"><a href="@m.LinkUrl"><i class="fa fa-pie-chart @m.IconClass icon">
-                    </i><span>@m.DisplayText</span><span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i></span></a></li>
-                //string controllerName = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
-                var parent = UserRoleRightHelper.GetUserMenus(55).Where(x => x.ParentNavigationID == m.ParentNavigationID).FirstOrDefault();
-                @*<div class="h1title sectors">
-                    <h1>@parent.AdditionalText</h1>
-                </div>*@
-                <div class="sub-nav clear">
-
-                    @foreach (var mi in UserRoleRightHelper.GetUserMenus(55).Where(x => x.ParentNavigationID == m.NavigationID && x.IsVisible).OrderBy(x => x.SequenceNo).ToList())
-                    {
-                        <a href="@mi.LinkUrl" class="@mi.IconClass">
-                            <span><i class="sprite"></i></span>
-                            <strong>@mi.DisplayText</strong>
+                    <li class="treeview" onclick="expandul(this)" id="expandul_@m.NavigationID">
+                        <a href="#">
+                            <i class="fa fa-pie-chart @m.IconClass icon">
+                            </i><span>@m.DisplayText</span><span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
                         </a>
-                        <br />
-                    }
-                    
-                </div>
-            }
+                        @*string controllerName = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();*@
+                        @*var parent = UserRoleRightHelper.GetUserMenus(55).Where(x => x.ParentNavigationID == m.ParentNavigationID).FirstOrDefault();*@
+                        @*<div class="h1title sectors">
+                                <h1>@parent.AdditionalText</h1>
+                            </div>*@
 
+                        <ul class="treeview-menu">
+                            @foreach (var mi in UserRoleRightHelper.GetUserMenus(55).Where(x => x.ParentNavigationID == m.NavigationID && x.IsVisible).OrderBy(x => x.SequenceNo).ToList())
+                            {
+
+                                <li href="@mi.LinkUrl" class="@mi.IconClass">
+                                    @*<span><i class="sprite"></i></span>
+                                        <strong>@mi.DisplayText</strong>*@
+                                    <a href="#"><i class="fa fa-circle-o"></i>@mi.DisplayText</a>
+
+                                </li>
+                                @*<br />*@
+
+
+                            }
+                        </ul>
+                    </li>
+
+
+                }
+
+                   
         </ul>
+         
 
     </section>
     <!-- /.sidebar -->
 </aside>
+<script>
+    function expandul(item) {
+        debugger;
+        var id = $(item).attr("id");
+        if ($("li#" + id).hasClass("active")) {
+            $("li#" + id).removeClass("active");
+            }
+            else {
+            $("li#" + id).addClass("active");
+
+            }
+     
+    }
+ 
+</script>
